@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { filterListings } from './searchUtils';
 import {
   StyleSheet, Text, View, SafeAreaView, TextInput,
   TouchableOpacity, ScrollView,
@@ -37,11 +38,8 @@ export default function App() {
   const [draft, setDraft] = useState('');
   const [rating, setRating] = useState(0);
 
-  const filtered = listings.filter(l =>
-    !query ||
-    l.course.toLowerCase().includes(query.toLowerCase()) ||
-    l.title.toLowerCase().includes(query.toLowerCase())
-  );
+  // Filter listings using the improved search function
+  const filtered = filterListings(listings, query);
 
   const openListing = (l: Listing) => {
     setActiveListing(l);
