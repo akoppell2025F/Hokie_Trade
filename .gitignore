@@ -73,3 +73,10 @@ tmp/
 # Baker
 .baker*
 # <<< baker:cs3704-hokie-trade <<<
+
+# Python (backend/)
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+backend/.env
