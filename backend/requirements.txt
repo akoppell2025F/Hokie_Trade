@@ -1,0 +1,2 @@
+# smtplib and email.message are part of Python's standard library.
+pytest>=8
