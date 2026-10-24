@@ -8,23 +8,20 @@ import {
 // new vt email check
 import { isVtEmail } from './validateEmail';
 
-type Listing = {
-  id: number;
-  emoji: string;
-  title: string;
-  course: string;
-  price: number;
-  seller: string;
-  desc: string;
-};
+// create-listing helpers
+import {
+  type Listing, type ListingForm, type ListingFormErrors, emptyListingForm, MAX_TITLE_LENGTH,
+  validateListing, buildListing, nextListingId, sellerNameFromEmail, formatPrice,
+} from './listingForm';
 
-const listings: Listing[] = [
+// Starting mock data. Listings live in state (below) so sellers can add more.
+const initialListings: Listing[] = [
   { id: 0, emoji: '📘', title: 'CS 3704 Software Engineering Textbook', course: 'CS 3704', price: 45, seller: 'Jordan Carter', desc: 'Used one semester, no highlighting, matches current edition.' },
   { id: 1, emoji: '🛋️', title: 'Mini Fridge — dorm size', course: '', price: 60, seller: 'Maria Lopez', desc: '3.2 cu ft, barely used, pickup near West AJ.' },
   { id: 2, emoji: '📐', title: 'MATH 2114 Notes + Old Exams', course: 'MATH 2114', price: 15, seller: 'Sam Patel', desc: 'Full semester of notes plus two practice exams, PDF delivery.' },
 ];
 
-type Screen = 'login' | 'verify' | 'browse' | 'detail' | 'thread' | 'rating';
+type Screen = 'login' | 'verify' | 'browse' | 'detail' | 'thread' | 'rating' | 'create';
 type Message = { from: 'me' | 'them'; text: string };
 
 export default function App() {
@@ -40,9 +37,39 @@ export default function App() {
   ]);
   const [draft, setDraft] = useState('');
   const [rating, setRating] = useState(0);
+  const [listings, setListings] = useState<Listing[]>(initialListings);
+  const [form, setForm] = useState<ListingForm>(emptyListingForm);
+  const [formErrors, setFormErrors] = useState<ListingFormErrors>({});
 
   // Filter listings using the improved search function
   const filtered = filterListings(listings, query);
+
+  // ----- Create listing -----
+  const openCreate = () => {
+    setForm(emptyListingForm);
+    setFormErrors({});
+    setScreen('create');
+  };
+
+  // Update one form field and clear that field's error while the user edits it
+  const updateForm = (field: keyof ListingForm, value: string) => {
+    setForm(prev => ({ ...prev, [field]: value }));
+    if (formErrors[field]) {
+      setFormErrors(prev => ({ ...prev, [field]: undefined }));
+    }
+  };
+
+  const submitListing = () => {
+    const errors = validateListing(form);
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+    const newListing = buildListing(form, nextListingId(listings), sellerNameFromEmail(email));
+    setListings(prev => [newListing, ...prev]); // newest first
+    setQuery(''); // clear any search so the new listing is visible
+    setScreen('browse');
+  };
 
   const openListing = (l: Listing) => {
     setActiveListing(l);
@@ -130,8 +157,11 @@ export default function App() {
   if (screen === 'browse') {
     return (
       <SafeAreaView style={styles.browseContainer}>
-        <View style={styles.topbar}>
+        <View style={[styles.topbar, styles.topbarRow]}>
           <Text style={styles.wordmarkSmall}>Hokie<Text style={{ color: '#F2A65A' }}>Trade</Text></Text>
+          <TouchableOpacity style={styles.sellBtn} onPress={openCreate}>
+            <Text style={styles.sellBtnText}>+ Sell an item</Text>
+          </TouchableOpacity>
         </View>
         <View style={{ padding: 20, flex: 1 }}>
           <TextInput
@@ -147,7 +177,7 @@ export default function App() {
                 <View style={{ marginLeft: 12, flex: 1 }}>
                   <Text style={styles.cardTitle}>{l.title}</Text>
                   <Text style={styles.cardMeta}>{l.seller}</Text>
-                  <Text style={styles.cardPrice}>${l.price}</Text>
+                  <Text style={styles.cardPrice}>{formatPrice(l.price)}</Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -169,8 +199,9 @@ export default function App() {
         <View style={{ padding: 20 }}>
           <Text style={{ fontSize: 64, textAlign: 'center', marginBottom: 16 }}>{activeListing.emoji}</Text>
           <Text style={styles.detailTitle}>{activeListing.title}</Text>
-          <Text style={styles.detailPrice}>${activeListing.price}</Text>
-          <Text style={styles.detailDesc}>{activeListing.desc}</Text>
+          <Text style={styles.detailPrice}>{formatPrice(activeListing.price)}</Text>
+          {activeListing.course ? <Text style={styles.detailCourse}>{activeListing.course}</Text> : null}
+          <Text style={styles.detailDesc}>{activeListing.desc || 'No description provided.'}</Text>
           <View style={styles.sellerRow}>
             <View style={styles.avatar}>
               <Text style={{ color: '#FBF6F1', fontWeight: '800' }}>
@@ -257,6 +288,69 @@ export default function App() {
     );
   }
 
+  // ---------- CREATE LISTING ----------
+  if (screen === 'create') {
+    return (
+      <SafeAreaView style={styles.browseContainer}>
+        <View style={[styles.topbar, styles.topbarRow]}>
+          <TouchableOpacity onPress={() => setScreen('browse')}>
+            <Text style={styles.backArrow}>← Cancel</Text>
+          </TouchableOpacity>
+          <Text style={styles.wordmarkSmall}>New listing</Text>
+        </View>
+        <ScrollView
+          contentContainerStyle={styles.formContent}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          automaticallyAdjustKeyboardInsets
+        >
+          <Text style={styles.formLabel}>Title *</Text>
+          <TextInput
+            style={[styles.formInput, formErrors.title ? styles.formInputError : null]}
+            placeholder="e.g. CS 3704 Textbook"
+            maxLength={MAX_TITLE_LENGTH}
+            value={form.title}
+            onChangeText={t => updateForm('title', t)}
+          />
+          {formErrors.title ? <Text style={styles.formError}>{formErrors.title}</Text> : null}
+
+          <Text style={styles.formLabel}>Course number (optional)</Text>
+          <TextInput
+            style={styles.formInput}
+            placeholder="e.g. CS 3704"
+            autoCapitalize="characters"
+            value={form.course}
+            onChangeText={t => updateForm('course', t)}
+          />
+          <Text style={styles.formHint}>Add one for textbooks and supplies so classmates can find it.</Text>
+
+          <Text style={styles.formLabel}>Price ($) *</Text>
+          <TextInput
+            style={[styles.formInput, formErrors.price ? styles.formInputError : null]}
+            placeholder="e.g. 45"
+            keyboardType="decimal-pad"
+            value={form.price}
+            onChangeText={t => updateForm('price', t)}
+          />
+          {formErrors.price ? <Text style={styles.formError}>{formErrors.price}</Text> : null}
+
+          <Text style={styles.formLabel}>Description</Text>
+          <TextInput
+            style={[styles.formInput, styles.formInputMultiline]}
+            placeholder="Condition, pickup spot, anything buyers should know"
+            multiline
+            value={form.desc}
+            onChangeText={t => updateForm('desc', t)}
+          />
+
+          <TouchableOpacity style={styles.btn} onPress={submitListing}>
+            <Text style={styles.btnText}>Post listing</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
   return null;
 }
 
@@ -302,4 +396,16 @@ const styles = StyleSheet.create({
   inputRow: { flexDirection: 'row', padding: 16, gap: 10, borderTopWidth: 1, borderTopColor: '#E6D9CE' },
   msgInput: { flex: 1, backgroundColor: '#fff', borderWidth: 1, borderColor: '#E6D9CE', borderRadius: 24, paddingHorizontal: 16, paddingVertical: 10 },
   sendBtn: { width: 44, height: 44, borderRadius: 22, backgroundColor: '#7A1B3A', alignItems: 'center', justifyContent: 'center' },
+  // create listing
+  topbarRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  sellBtn: { backgroundColor: '#E5751F', paddingVertical: 8, paddingHorizontal: 14, borderRadius: 20 },
+  sellBtnText: { color: '#fff', fontWeight: '700', fontSize: 14 },
+  detailCourse: { fontSize: 13, fontWeight: '700', color: '#6A5750', marginBottom: 8 },
+  formContent: { padding: 20 },
+  formLabel: { fontSize: 13, fontWeight: '700', color: '#3A2A26', marginTop: 16, marginBottom: 6 },
+  formInput: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#E6D9CE', borderRadius: 12, padding: 14, fontSize: 15 },
+  formInputError: { borderColor: '#E5751F' },
+  formInputMultiline: { minHeight: 100, textAlignVertical: 'top' },
+  formHint: { fontSize: 12, color: '#6A5750', marginTop: 6 },
+  formError: { fontSize: 12, color: '#A8410F', marginTop: 6, fontWeight: '700' },
 });
