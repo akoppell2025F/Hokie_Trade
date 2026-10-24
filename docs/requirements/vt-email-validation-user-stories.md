@@ -1,6 +1,6 @@
 # User Stories: Hokie Trade
 
-## US-001 — Restrict sign-up to Virginia Tech (@vt.edu) email addresses
+## US-003 — Restrict sign-up to Virginia Tech (@vt.edu) email addresses
 
 **Story:** As a Virginia Tech student signing up for Hokie Trade, I want the app to accept only valid `@vt.edu` email addresses and show a clear error for anything else, so that the marketplace stays limited to the VT community.
 
@@ -15,11 +15,11 @@
 
 **Priority:** Must-have (MoSCoW)
 
-**Related requirements:** ADR-0001 — centralized VT email validation (design artifact for this enhancement); `validateEmail.ts` (`isVtEmail`) and `handleSendCode` in `App.tsx`.
+**Related requirements:** ADR-0002 — centralized VT email validation (design artifact for this enhancement); US-002 — email verification (the server-side flow that builds on this client-side gate); `validateEmail.ts` (`isVtEmail`) and `handleSendCode` in `App.tsx`.
 
 **Assumptions / dependencies:**
-- The current version is an Expo/React Native prototype with **no backend API**, so validation runs in the client. This is a known limitation recorded in ADR-0001; server-side enforcement is a follow-up once a backend exists.
+- The current version is an Expo/React Native prototype with **no backend API**, so validation runs in the client. This is a known limitation recorded in ADR-0002; server-side enforcement is a follow-up once a backend exists.
 - A valid `@vt.edu` address proves VT affiliation only; it does **not** prove current student status. Verifying current enrollment is out of scope for this story.
 - Email ownership verification is simulated in the prototype; no real code is sent. Real email verification is out of scope.
 - "Valid" is defined as: exactly one `@`, a non-empty local part, and a domain that is exactly `vt.edu` compared case-insensitively after trimming leading and trailing whitespace. Subdomains and lookalike/suffix domains are invalid.
-- The client-side check is the only enforcement in this prototype and therefore cannot stop a determined user from bypassing the UI; closing that gap requires the backend follow-up in ADR-0001.
+- The client-side check is the only enforcement in this prototype and therefore cannot stop a determined user from bypassing the UI; closing that gap requires the backend follow-up in ADR-0002.

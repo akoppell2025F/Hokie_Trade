@@ -1,4 +1,4 @@
-# ADR-0001: Centralize VT Email Validation in a Single Anchored-Regex Module
+# ADR-0002: Centralize VT Email Validation in a Single Anchored-Regex Module
 
 - **Status:** Accepted
 - **Date:** 2026-10-23
@@ -52,7 +52,8 @@ We will define the rule once in `validateEmail.ts` as an exported `isVtEmail(val
 | Wait for a backend and enforce only server-side | Leaves the current prototype with no gate at all, so non-VT addresses pass today; the client check is a useful interim control as long as its limitation is documented. |
 
 ## Links
-- US-001 — restrict sign-up to Virginia Tech email addresses.
+- US-003 — restrict sign-up to Virginia Tech email addresses.
+- US-002 — email verification (the server-side flow that builds on this rule).
 - `validateEmail.ts` — implementation of the single rule.
 - `App.tsx` (`handleSendCode`) — the UI integration point.
 - `__tests__/validateEmail.test.ts` — unit tests for the rule.
