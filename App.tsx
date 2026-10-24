@@ -5,9 +5,6 @@ import {
   TouchableOpacity, ScrollView,
 } from 'react-native';
 
-// new vt email check
-import { isVtEmail } from './validateEmail';
-
 type Listing = {
   id: number;
   emoji: string;
@@ -57,14 +54,12 @@ export default function App() {
       setMessages(prev => [...prev, { from: 'them', text: 'Sounds good, see you then!' }]);
     }, 600);
   };
-     // New VT Email Check
-    const handleSendCode = () => {
-    const trimmed = email.trim();
-    if (!isVtEmail(email)) {
-      setEmailError('Enter a valid VT email ending in @vt.edu to get a code.');
+
+  const handleSendCode = () => {
+    if (!email.toLowerCase().endsWith('@vt.edu')) {
+      setEmailError('Enter a VT email ending in @vt.edu to get a code.');
       return;
     }
-    setEmail(trimmed);
     setEmailError('');
     setScreen('verify');
   };
