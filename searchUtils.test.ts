@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+// Uses Jest globals (describe/it/expect) via the jest-expo preset.
 import { filterListings, normalizeSearch } from './searchUtils';
 // Tests cover search normalization and listing filtering.
 const listings = [
