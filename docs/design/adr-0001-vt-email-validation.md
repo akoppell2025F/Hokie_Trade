@@ -11,7 +11,7 @@ The sign-up screen originally accepted any syntactically valid email. The enhanc
 
 Additional forces shaping this decision:
 
-- **Domain matching must be exact.** The intuitive implementations are the dangerous ones: suffix checks (`endsWith("@vt.edu")` is safe only by accident, and `endsWith("vt.edu")` is not) and substring checks admit lookalikes such as `alice@vt.edu.evil.com` or `alice@notvt.edu`. Subdomain handling must be an explicit decision, not an accident of string matching.
+- **Domain matching must be exact.** The intuitive shortcuts are easy to get wrong: `endsWith("vt.edu")` accepts `notvt.edu`, substring checks accept `vt.edu.evil.com`, and even `endsWith("@vt.edu")` admits inputs with an extra `@` earlier in the string. Subdomain handling must be an explicit decision, not an accident of string matching.
 - **The rule needs one definition.** The check is used from the login handler today and will be reused by future entry points (invites, profile changes, a future backend). Copying the regex into each call site invites drift.
 - **Case and whitespace are not meaningful here.** Users paste addresses with surrounding spaces and type mixed-case domains; the rule should normalize those before deciding.
 - **A clear sign-up error is a usability requirement.** A silent rejection or a generic failure leaves the user unable to correct the problem; the message must be field-level and actionable.
@@ -44,10 +44,10 @@ We will define the rule once in `validateEmail.ts` as an exported `isVtEmail(val
 ## Alternatives Considered
 | Alternative | Why rejected |
 |-------------|--------------|
-| `endsWith('@vt.edu')` / suffix matching | Easy to get subtly wrong and reads as a suffix rule; `endsWith('vt.edu')` accepts `notvt.edu`, and substring checks accept `vt.edu.evil.com`. The anchored regex makes exactness explicit. |
+| `endsWith('@vt.edu')` / suffix matching | Easy to get subtly wrong and reads as a suffix rule; `endsWith('vt.edu')` accepts `notvt.edu`, substring checks accept `vt.edu.evil.com`, and a plain suffix check can admit an address with more than one `@`. The anchored regex makes exactness explicit. |
 | Split on `@` and compare the domain with `===` | Correct but more code and more edge cases (multiple `@`, empty parts) handled imperatively; the regex expresses the same rule in one testable line. |
 | Full RFC 5322 regex or validation library | Much larger surface than needed for a single-domain prototype, harder to review, and still does not prove affiliation; overkill for a `@vt.edu` gate. |
-| DNS / MX lookup on the domain | Verifies deliverability, not affiliation, adds a network dependency and latency to sign-up, and fails on transient resolver errors; it answers a different question than the product is asking. |
+| DNS / MX lookup on the domain | Verifies deliverability, not affiliation, adds a network dependency and latency to sign-up, and can fail on transient resolver errors; it answers a different question than the product is asking. |
 | Allow any `.edu` address | Broader than the product premise (VT students only); admits every other university's address and cannot be enforced without trusting external rosters. |
 | Wait for a backend and enforce only server-side | Leaves the current prototype with no gate at all, so non-VT addresses pass today; the client check is a useful interim control as long as its limitation is documented. |
 
