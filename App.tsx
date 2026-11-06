@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { filterListings } from './searchUtils';
+import { filterListings, showClearButton, resultCountText } from './searchUtils';
 import {
   StyleSheet, Text, View, SafeAreaView, TextInput,
   TouchableOpacity, ScrollView,
@@ -179,14 +179,24 @@ const [ratings, setRatings] = useState<Record<string, number>>({});
           </TouchableOpacity>
         </View>
         <View style={{ padding: 20, flex: 1 }}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search course number, e.g. CS 3704"
-            value={query}
-            onChangeText={setQuery}
-          />
-          <ScrollView style={{ marginTop: 16 }}>
-            {filtered.map(l => (
+          <View style={styles.searchRow}>
+            <TextInput
+              style={[styles.searchInput, { flex: 1 }]}
+              placeholder="Search course number, e.g. CS 3704"
+              value={query}
+              onChangeText={setQuery}
+            />
+            {showClearButton(query) ? (
+              <TouchableOpacity style={styles.clearBtn} onPress={() => setQuery('')}>
+                <Text style={styles.clearBtnText}>Clear</Text>
+              </TouchableOpacity>
+            ) : null}
+          </View>
+          <Text style={styles.resultCount}>{resultCountText(filtered.length)}</Text>
+          <ScrollView style={{ marginTop: 12 }}>
+            {filtered.length === 0 ? (
+              <Text style={styles.emptyText}>No listings found</Text>
+            ) : filtered.map(l => (
               <TouchableOpacity key={l.id} style={styles.card} onPress={() => openListing(l)}>
                 <Text style={{ fontSize: 28 }}>{l.emoji}</Text>
                 <View style={{ marginLeft: 12, flex: 1 }}>
@@ -401,6 +411,11 @@ const styles = StyleSheet.create({
   topbar: { backgroundColor: '#7A1B3A', padding: 20 },
   backArrow: { color: '#FBF6F1', fontWeight: '700' },
   searchInput: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#E6D9CE', borderRadius: 12, padding: 14, fontSize: 15 },
+  searchRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  clearBtn: { backgroundColor: '#E6D9CE', paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12 },
+  clearBtnText: { color: '#7A1B3A', fontWeight: '700', fontSize: 14 },
+  resultCount: { color: '#6A5750', fontSize: 13, marginTop: 12 },
+  emptyText: { color: '#6A5750', fontSize: 15, textAlign: 'center', marginTop: 32 },
   card: { flexDirection: 'row', backgroundColor: '#fff', borderWidth: 1, borderColor: '#E6D9CE', borderRadius: 16, padding: 14, marginBottom: 12, alignItems: 'center' },
   cardTitle: { fontWeight: '700', fontSize: 15 },
   cardMeta: { color: '#6A5750', fontSize: 13, marginTop: 2 },
