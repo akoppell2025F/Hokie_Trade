@@ -112,9 +112,8 @@ docs/
   adr/                    Architecture decision records
   requirements/           User stories
   research/               Survey results and usability study
-  templates/              Course templates (course-owned, do not move)
-.opencode/, AGENTS.md,    CS3704 course agent setup (course-owned)
-PHASE.md, baker.yml
+  course-tooling/           CS3704 course agent setup (not needed to run the app)
+AGENTS.md, CLAUDE.md      Instructions for AI coding tools
 ```
 
 ## AI Use

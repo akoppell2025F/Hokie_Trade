@@ -8,7 +8,8 @@ This is an Expo/React Native mobile application. Prioritize mobile-first pattern
   - `frontend/__tests__/` — Jest tests (`*.test.ts`). Put new frontend tests here.
 - `backend/` — Python module for email verification. Run `pytest` from `backend/`. Secrets come from environment variables; never commit `backend/.env`.
 - `docs/` — team docs: `product/`, `design/`, `adr/`, `requirements/`, `research/`. Write new ADRs to `docs/adr/` and new user stories to `docs/requirements/`.
-- Course-owned (do not move or rename): `docs/templates/`, `docs/README.md`, `docs/STUDENT_GUIDE.md`, `docs/ACKNOWLEDGEMENTS.md`, `PHASE.md`, `.opencode/`, `opencode.json`, `baker.yml`, and the baker-marked section of this file.
+- `course-tooling/` — the CS3704 course agent setup (opencode agents, templates, baker). Not used to build or run the app; see `course-tooling/README.md`.
+
 
 ## Expo has changed — do not trust your training data
 
