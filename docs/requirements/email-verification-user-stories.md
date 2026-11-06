@@ -18,7 +18,7 @@
 
 **Priority:** Must-have (MoSCoW). VT-only verification is the app's core trust feature and part of the MVP in PRODUCT.md §5.1.
 
-**Related requirements:** PRODUCT.md §5.1 (Authentication), PRODUCT.md §9 user story 1 (see that every user is verified with a @vt.edu email), SYSTEM.md §5 (Auth Flow). Design: [docs/design/ADR-0001-python-smtp-email-verification.md](../design/ADR-0001-python-smtp-email-verification.md).
+**Related requirements:** [PRODUCT.md](../product/PRODUCT.md) §5.1 (Authentication), PRODUCT.md §9 user story 1 (see that every user is verified with a @vt.edu email), [SYSTEM.md](../design/SYSTEM.md) §5 (Auth Flow). Design: [docs/adr/ADR-0001-python-smtp-email-verification.md](../adr/ADR-0001-python-smtp-email-verification.md).
 
 **Implementation and tests:** `backend/email_verification.py` → `send_verification_email()`. Each criterion is covered in `backend/tests/test_email_verification.py`:
 

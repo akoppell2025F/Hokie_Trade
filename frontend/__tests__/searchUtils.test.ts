@@ -1,5 +1,5 @@
 // Uses Jest globals (describe/it/expect) via the jest-expo preset.
-import { filterListings, normalizeSearch } from './searchUtils';
+import { filterListings, normalizeSearch } from '../src/utils/searchUtils';
 // Tests cover search normalization and listing filtering.
 const listings = [
   {

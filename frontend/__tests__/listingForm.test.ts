@@ -11,8 +11,8 @@ import {
   type Listing, type ListingForm, emptyListingForm,
   parsePrice, validateListing, sellerNameFromEmail,
   nextListingId, buildListing, formatPrice,
-} from '../listingForm';
-import { filterListings } from '../searchUtils';
+} from '../src/utils/listingForm';
+import { filterListings } from '../src/utils/searchUtils';
 
 const validForm: ListingForm = {
   title: 'CS 3704 Textbook',

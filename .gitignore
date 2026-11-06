@@ -37,8 +37,8 @@ yarn-error.*
 *.tsbuildinfo
 
 # generated native folders
-/ios
-/android
+/frontend/ios
+/frontend/android
 # >>> baker:cs3704-hokie-trade >>>
 # Generated submission artifacts
 cs3704-submission-*.zip
