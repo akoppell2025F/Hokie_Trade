@@ -5,6 +5,8 @@ import {
   TouchableOpacity, ScrollView,
 } from 'react-native';
 
+import { isValidRating } from './validateRating';
+
 // new vt email check
 import { isVtEmail } from './validateEmail';
 
@@ -37,6 +39,8 @@ export default function App() {
   ]);
   const [draft, setDraft] = useState('');
   const [rating, setRating] = useState(0);
+  const [ratingError, setRatingError] = useState('');
+const [ratings, setRatings] = useState<Record<string, number>>({});
   const [listings, setListings] = useState<Listing[]>(initialListings);
   const [form, setForm] = useState<ListingForm>(emptyListingForm);
   const [formErrors, setFormErrors] = useState<ListingFormErrors>({});
@@ -95,6 +99,17 @@ export default function App() {
     setEmailError('');
     setScreen('verify');
   };
+  const handleSubmitRating = () => {
+  if (!activeListing) return;
+  if (!isValidRating(rating)) {
+    setRatingError('Tap a star to rate your trade (1 to 5).');
+    return;
+  }
+  setRatings(prev => ({ ...prev, [activeListing.seller]: rating }));
+  setRating(0);
+  setRatingError('');
+  setScreen('browse');
+};
 
   // ---------- LOGIN ----------
   if (screen === 'login') {
@@ -202,7 +217,7 @@ export default function App() {
           <Text style={styles.detailPrice}>{formatPrice(activeListing.price)}</Text>
           {activeListing.course ? <Text style={styles.detailCourse}>{activeListing.course}</Text> : null}
           <Text style={styles.detailDesc}>{activeListing.desc || 'No description provided.'}</Text>
-          <View style={styles.sellerRow}>
+                    <View style={styles.sellerRow}>
             <View style={styles.avatar}>
               <Text style={{ color: '#FBF6F1', fontWeight: '800' }}>
                 {activeListing.seller.split(' ').map(n => n[0]).join('')}
@@ -211,6 +226,11 @@ export default function App() {
             <View style={{ marginLeft: 12 }}>
               <Text style={{ fontWeight: '700' }}>{activeListing.seller}</Text>
               <Text style={{ color: '#6A5750', fontSize: 13 }}>✓ Verified @vt.edu</Text>
+              {ratings[activeListing.seller] ? (
+                <Text style={{ color: '#F2A65A', fontSize: 13 }}>
+                  {'★'.repeat(ratings[activeListing.seller])} your rating
+                </Text>
+              ) : null}
             </View>
           </View>
           <TouchableOpacity style={styles.btn} onPress={() => setScreen('thread')}>
@@ -273,14 +293,15 @@ export default function App() {
           <Text style={{ fontWeight: '700', marginTop: 20 }}>
             How was your trade with {activeListing.seller}?
           </Text>
-          <View style={{ flexDirection: 'row', marginVertical: 20 }}>
+                    <View style={{ flexDirection: 'row', marginVertical: 20 }}>
             {[1, 2, 3, 4, 5].map(n => (
-              <TouchableOpacity key={n} onPress={() => setRating(n)}>
+              <TouchableOpacity key={n} onPress={() => { setRating(n); setRatingError(''); }}>
                 <Text style={{ fontSize: 36, color: n <= rating ? '#F2A65A' : '#E6D9CE' }}>★</Text>
               </TouchableOpacity>
             ))}
           </View>
-          <TouchableOpacity style={styles.btn} onPress={() => setScreen('browse')}>
+          {ratingError ? <Text style={styles.ratingErrorText}>{ratingError}</Text> : null}
+          <TouchableOpacity style={styles.btn} onPress={handleSubmitRating}>
             <Text style={styles.btnText}>Submit Rating</Text>
           </TouchableOpacity>
         </View>
@@ -408,4 +429,5 @@ const styles = StyleSheet.create({
   formInputMultiline: { minHeight: 100, textAlignVertical: 'top' },
   formHint: { fontSize: 12, color: '#6A5750', marginTop: 6 },
   formError: { fontSize: 12, color: '#A8410F', marginTop: 6, fontWeight: '700' },
+  ratingErrorText: { fontSize: 13, color: '#B3261E', fontWeight: '700', marginBottom: 8 },
 });
