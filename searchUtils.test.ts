@@ -1,5 +1,7 @@
 // Uses Jest globals (describe/it/expect) via the jest-expo preset.
-import { filterListings, normalizeSearch } from './searchUtils';
+import {
+  filterListings, normalizeSearch, showClearButton, resultCountText,
+} from './searchUtils';
 // Tests cover search normalization and listing filtering.
 const listings = [
   {
@@ -57,5 +59,40 @@ describe('filterListings', () => {
 
   it('treats a whitespace-only search like an empty search', () => {
     expect(filterListings(listings, '   ')).toHaveLength(3);
+  });
+});
+
+describe('showClearButton', () => {
+  it('stays hidden for an empty or spaces-only search', () => {
+    expect(showClearButton('')).toBe(false);
+    expect(showClearButton('   ')).toBe(false);
+  });
+
+  it('shows up once the user types a search', () => {
+    expect(showClearButton('cs3704')).toBe(true);
+  });
+});
+
+describe('resultCountText', () => {
+  it('uses the singular for one listing', () => {
+    expect(resultCountText(1)).toBe('1 listing found');
+  });
+
+  it('uses the plural for zero and for many listings', () => {
+    expect(resultCountText(0)).toBe('0 listings found');
+    expect(resultCountText(3)).toBe('3 listings found');
+  });
+
+  it('matches the number of filtered listings', () => {
+    expect(resultCountText(filterListings(listings, 'cs3704').length)).toBe('1 listing found');
+    expect(resultCountText(filterListings(listings, 'biology').length)).toBe('0 listings found');
+  });
+});
+
+describe('clearing the search', () => {
+  it('shows every listing again after the query is cleared', () => {
+    expect(filterListings(listings, 'cs3704')).toHaveLength(1);
+    expect(filterListings(listings, '')).toHaveLength(listings.length);
+    expect(showClearButton('')).toBe(false);
   });
 });
