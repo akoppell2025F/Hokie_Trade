@@ -23,3 +23,10 @@ export const filterListings = <T extends SearchableListing>(
     normalizeSearch(listing.desc).includes(search)
   );
 };
+
+// Only offer the clear button once the user has typed something
+export const showClearButton = (query: string): boolean => query.trim().length > 0;
+
+// Count line shown above the results
+export const resultCountText = (count: number): string =>
+  `${count} ${count === 1 ? 'listing' : 'listings'} found`;
