@@ -1,7 +1,7 @@
 // Uses Jest globals (describe/it/expect) via the jest-expo preset.
 import {
   filterListings, normalizeSearch, showClearButton, resultCountText,
-} from './searchUtils';
+} from '../src/utils/searchUtils';
 // Tests cover search normalization and listing filtering.
 const listings = [
   {
