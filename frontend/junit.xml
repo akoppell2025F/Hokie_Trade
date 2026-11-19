@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="37" failures="0" errors="0" time="1.938">
+  <testsuite name="undefined" errors="0" failures="0" skipped="0" timestamp="2026-11-19T18:14:42" time="0.903" tests="6">
+    <testcase classname=" accepts a normal VT email" name=" accepts a normal VT email" time="0.004">
+    </testcase>
+    <testcase classname=" accepts uppercase" name=" accepts uppercase" time="0">
+    </testcase>
+    <testcase classname=" rejects a non-VT email" name=" rejects a non-VT email" time="0">
+    </testcase>
+    <testcase classname=" rejects nothing before the @" name=" rejects nothing before the @" time="0">
+    </testcase>
+    <testcase classname=" rejects a fake domain that starts with vt.edu" name=" rejects a fake domain that starts with vt.edu" time="0">
+    </testcase>
+    <testcase classname=" rejects an empty string" name=" rejects an empty string" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="normalizeSearch" errors="0" failures="0" skipped="0" timestamp="2026-11-19T18:14:42" time="0.93" tests="14">
+    <testcase classname="normalizeSearch ignores capitalization and spaces" name="normalizeSearch ignores capitalization and spaces" time="0.006">
+    </testcase>
+    <testcase classname="filterListings finds course numbers without spaces" name="filterListings finds course numbers without spaces" time="0.001">
+    </testcase>
+    <testcase classname="filterListings ignores extra spaces and capitalization" name="filterListings ignores extra spaces and capitalization" time="0">
+    </testcase>
+    <testcase classname="filterListings searches listing descriptions" name="filterListings searches listing descriptions" time="0">
+    </testcase>
+    <testcase classname="filterListings returns no listings for an unmatched search" name="filterListings returns no listings for an unmatched search" time="0">
+    </testcase>
+    <testcase classname="filterListings returns all listings for an empty search" name="filterListings returns all listings for an empty search" time="0">
+    </testcase>
+    <testcase classname="filterListings searches listing titles" name="filterListings searches listing titles" time="0">
+    </testcase>
+    <testcase classname="filterListings treats a whitespace-only search like an empty search" name="filterListings treats a whitespace-only search like an empty search" time="0">
+    </testcase>
+    <testcase classname="showClearButton stays hidden for an empty or spaces-only search" name="showClearButton stays hidden for an empty or spaces-only search" time="0.001">
+    </testcase>
+    <testcase classname="showClearButton shows up once the user types a search" name="showClearButton shows up once the user types a search" time="0">
+    </testcase>
+    <testcase classname="resultCountText uses the singular for one listing" name="resultCountText uses the singular for one listing" time="0">
+    </testcase>
+    <testcase classname="resultCountText uses the plural for zero and for many listings" name="resultCountText uses the plural for zero and for many listings" time="0">
+    </testcase>
+    <testcase classname="resultCountText matches the number of filtered listings" name="resultCountText matches the number of filtered listings" time="0">
+    </testcase>
+    <testcase classname="clearing the search shows every listing again after the query is cleared" name="clearing the search shows every listing again after the query is cleared" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="parsePrice" errors="0" failures="0" skipped="0" timestamp="2026-11-19T18:14:42" time="0.942" tests="17">
+    <testcase classname="parsePrice accepts whole dollars, cents, and a leading $" name="parsePrice accepts whole dollars, cents, and a leading $" time="0.004">
+    </testcase>
+    <testcase classname="parsePrice rejects letters, negatives, extra decimals, and huge prices" name="parsePrice rejects letters, negatives, extra decimals, and huge prices" time="0.001">
+    </testcase>
+    <testcase classname="validateListing returns no errors for a valid form" name="validateListing returns no errors for a valid form" time="0">
+    </testcase>
+    <testcase classname="validateListing allows course and description to be empty" name="validateListing allows course and description to be empty" time="0">
+    </testcase>
+    <testcase classname="validateListing requires a title, even if only spaces were typed" name="validateListing requires a title, even if only spaces were typed" time="0">
+    </testcase>
+    <testcase classname="validateListing rejects a title that is too long" name="validateListing rejects a title that is too long" time="0">
+    </testcase>
+    <testcase classname="validateListing requires a valid price" name="validateListing requires a valid price" time="0">
+    </testcase>
+    <testcase classname="validateListing reports every bad field at once" name="validateListing reports every bad field at once" time="0">
+    </testcase>
+    <testcase classname="sellerNameFromEmail uses the part before the @" name="sellerNameFromEmail uses the part before the @" time="0">
+    </testcase>
+    <testcase classname="sellerNameFromEmail falls back to &quot;You&quot; when there is no email" name="sellerNameFromEmail falls back to &quot;You&quot; when there is no email" time="0">
+    </testcase>
+    <testcase classname="nextListingId starts at 0 when there are no listings" name="nextListingId starts at 0 when there are no listings" time="0">
+    </testcase>
+    <testcase classname="nextListingId is one more than the largest id" name="nextListingId is one more than the largest id" time="0">
+    </testcase>
+    <testcase classname="buildListing trims text, uppercases the course, and converts the price" name="buildListing trims text, uppercases the course, and converts the price" time="0.001">
+    </testcase>
+    <testcase classname="buildListing uses a box emoji when there is no course" name="buildListing uses a box emoji when there is no course" time="0">
+    </testcase>
+    <testcase classname="buildListing throws if the price was never validated" name="buildListing throws if the price was never validated" time="0.006">
+    </testcase>
+    <testcase classname="formatPrice shows whole dollars without cents and others with two decimals" name="formatPrice shows whole dollars without cents and others with two decimals" time="0.001">
+    </testcase>
+    <testcase classname="create listing + search finds a newly created listing by course number" name="create listing + search finds a newly created listing by course number" time="0.001">
+    </testcase>
+  </testsuite>
+</testsuites>

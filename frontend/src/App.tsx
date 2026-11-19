@@ -114,7 +114,7 @@ export default function App() {
             value={email}
             onChangeText={(t) => { setEmail(t); if (emailError) setEmailError(''); }}
           />
-          <Text style={styles.hint}>Must end in @vt.edu — that's how we verify you're a Hokie.</Text>
+          <Text style={styles.hint}>{"Must end in @vt.edu — that's how we verify you're a Hokie."}</Text>
           {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
           <TouchableOpacity style={styles.btn} onPress={handleSendCode}>

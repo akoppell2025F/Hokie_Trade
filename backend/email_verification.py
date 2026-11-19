@@ -41,7 +41,7 @@ class SmtpConfig:
     sender: str
 
     @classmethod
-    def from_env(cls) -> "SmtpConfig":
+    def from_env(cls) -> SmtpConfig:
         try:
             host = os.environ["SMTP_HOST"]
             username = os.environ["SMTP_USERNAME"]
