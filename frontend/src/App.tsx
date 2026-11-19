@@ -14,6 +14,9 @@ import {
   validateListing, buildListing, nextListingId, sellerNameFromEmail, formatPrice,
 } from './utils/listingForm';
 
+// safe meetup spots
+import { MEETUP_SPOTS, getMeetupSpot, suggestMeetupSpot, meetupMessage } from './utils/meetupSpots';
+
 // Starting mock data. Listings live in state (below) so sellers can add more.
 const initialListings: Listing[] = [
   { id: 0, emoji: '📘', title: 'CS 3704 Software Engineering Textbook', course: 'CS 3704', price: 45, seller: 'Jordan Carter', desc: 'Used one semester, no highlighting, matches current edition.' },
@@ -40,6 +43,8 @@ export default function App() {
   const [listings, setListings] = useState<Listing[]>(initialListings);
   const [form, setForm] = useState<ListingForm>(emptyListingForm);
   const [formErrors, setFormErrors] = useState<ListingFormErrors>({});
+  // null = use the suggested spot for the open listing
+  const [meetupSpotId, setMeetupSpotId] = useState<string | null>(null);
 
   // Filter listings using the improved search function
   const filtered = filterListings(listings, query);
@@ -73,16 +78,22 @@ export default function App() {
 
   const openListing = (l: Listing) => {
     setActiveListing(l);
+    setMeetupSpotId(null); // each listing starts with its own suggestion
     setScreen('detail');
+  };
+
+  // Send a message from the buyer, then a scripted reply from the seller
+  const postMessage = (text: string) => {
+    setMessages(prev => [...prev, { from: 'me', text }]);
+    setTimeout(() => {
+      setMessages(prev => [...prev, { from: 'them', text: 'Sounds good, see you then!' }]);
+    }, 600);
   };
 
   const sendMessage = () => {
     if (!draft.trim()) return;
-    setMessages(prev => [...prev, { from: 'me', text: draft }]);
+    postMessage(draft.trim());
     setDraft('');
-    setTimeout(() => {
-      setMessages(prev => [...prev, { from: 'them', text: 'Sounds good, see you then!' }]);
-    }, 600);
   };
      // New VT Email Check
     const handleSendCode = () => {
@@ -233,6 +244,8 @@ export default function App() {
 
   // ---------- MESSAGE THREAD ----------
   if (screen === 'thread' && activeListing) {
+    const suggestedSpot = suggestMeetupSpot(activeListing);
+    const selectedSpot = (meetupSpotId && getMeetupSpot(meetupSpotId)) || suggestedSpot;
     return (
       <SafeAreaView style={styles.browseContainer}>
         <View style={styles.topbar}>
@@ -250,8 +263,29 @@ export default function App() {
             </View>
           ))}
           <View style={styles.safeSpot}>
-            <Text style={{ fontWeight: '700', fontSize: 13 }}>📍 Suggested safe meetup spot</Text>
-            <Text style={{ color: '#6A5750', fontSize: 13 }}>Newman Library, main entrance</Text>
+            <Text style={{ fontWeight: '700', fontSize: 13 }}>📍 Pick a safe meetup spot</Text>
+            <Text style={styles.spotHint}>Busy, public places on campus. Meet during the day if you can.</Text>
+            {MEETUP_SPOTS.map(spot => {
+              const selected = spot.id === selectedSpot.id;
+              return (
+                <TouchableOpacity
+                  key={spot.id}
+                  style={[styles.spotOption, selected ? styles.spotOptionSelected : null]}
+                  onPress={() => setMeetupSpotId(spot.id)}
+                  accessibilityRole="radio"
+                  accessibilityState={{ selected }}
+                >
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.spotName}>{spot.name}</Text>
+                    <Text style={styles.spotDetail}>{spot.detail}</Text>
+                  </View>
+                  {spot.id === suggestedSpot.id ? <Text style={styles.spotBadge}>Suggested</Text> : null}
+                </TouchableOpacity>
+              );
+            })}
+            <TouchableOpacity style={styles.spotSendBtn} onPress={() => postMessage(meetupMessage(selectedSpot))}>
+              <Text style={styles.spotSendText}>Propose {selectedSpot.name}</Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
         <View style={styles.inputRow}>
@@ -423,4 +457,13 @@ const styles = StyleSheet.create({
   formInputMultiline: { minHeight: 100, textAlignVertical: 'top' },
   formHint: { fontSize: 12, color: '#6A5750', marginTop: 6 },
   formError: { fontSize: 12, color: '#A8410F', marginTop: 6, fontWeight: '700' },
+  // meetup spot picker
+  spotHint: { color: '#6A5750', fontSize: 12, marginTop: 2, marginBottom: 8 },
+  spotOption: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderWidth: 1, borderColor: '#E6D9CE', borderRadius: 12, padding: 12, marginTop: 8 },
+  spotOptionSelected: { borderColor: '#7A1B3A', borderWidth: 2 },
+  spotName: { fontWeight: '700', fontSize: 14, color: '#231512' },
+  spotDetail: { color: '#6A5750', fontSize: 12, marginTop: 2 },
+  spotBadge: { backgroundColor: '#F2A65A', color: '#231512', fontSize: 11, fontWeight: '700', paddingVertical: 3, paddingHorizontal: 8, borderRadius: 10, overflow: 'hidden' },
+  spotSendBtn: { backgroundColor: '#7A1B3A', padding: 12, borderRadius: 12, alignItems: 'center', marginTop: 12 },
+  spotSendText: { color: '#FBF6F1', fontWeight: '700', fontSize: 14 },
 });
