@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import { filterListings, showClearButton, resultCountText } from './searchUtils';
+import { filterListings, showClearButton, resultCountText } from './utils/searchUtils';
 import {
   StyleSheet, Text, View, SafeAreaView, TextInput,
   TouchableOpacity, ScrollView,
 } from 'react-native';
 
 // new vt email check
-import { isVtEmail } from './validateEmail';
+import { isVtEmail } from './utils/validateEmail';
 
 // create-listing helpers
 import {
   type Listing, type ListingForm, type ListingFormErrors, emptyListingForm, MAX_TITLE_LENGTH,
   validateListing, buildListing, nextListingId, sellerNameFromEmail, formatPrice,
-} from './listingForm';
+} from './utils/listingForm';
 
 // Starting mock data. Listings live in state (below) so sellers can add more.
 const initialListings: Listing[] = [

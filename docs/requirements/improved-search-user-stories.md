@@ -17,12 +17,12 @@
 
 **Priority:** Must-have (MoSCoW) — course-number search is the main way students find textbooks, and it's part of the MVP in PRODUCT.md §5.3.
 
-**Related requirements:** PRODUCT.md §5.3 (Browse & Search), PRODUCT.md §9 user story 6 (filter listings by course number). Design: [docs/design/improved-search-implementation-sketch.md](../design/improved-search-implementation-sketch.md).
+**Related requirements:** [PRODUCT.md](../product/PRODUCT.md) §5.3 (Browse & Search), PRODUCT.md §9 user story 6 (filter listings by course number). Design: [docs/design/improved-search-implementation-sketch.md](../design/improved-search-implementation-sketch.md).
 
 **Assumptions / dependencies:**
-- Listings are still the in-memory mock data in `App.tsx`; there is no backend search.
+- Listings are still the in-memory mock data in `frontend/src/App.tsx`; there is no backend search.
 - Matching is a simple "contains" check after normalization. Typos, punctuation (e.g. `CS-3704`), and result ranking are not handled and are out of scope for this story.
 
 ---
 
-*AI disclosure: drafted with Claude Code (Opus 5.5) using the course user-story template, based on the implemented `searchUtils.ts` and its tests. Reviewed and edited by Anvit Koppella.*
+*AI disclosure: drafted with Claude Code (Opus 5.5) using the course user-story template, based on the implemented `frontend/src/utils/searchUtils.ts` and its tests. Reviewed and edited by Anvit Koppella.*

@@ -6,7 +6,7 @@
  * Reviewed and run by me; all tests pass with `npm test`.
  * Function under test: isVtEmail in validateEmail.ts (PM2.1).
  */
-import { isVtEmail } from '../validateEmail';
+import { isVtEmail } from '../src/utils/validateEmail';
 
 test('accepts a normal VT email', () => {
   expect(isVtEmail('yourname@vt.edu')).toBe(true);
