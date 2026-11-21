@@ -2,7 +2,7 @@
 
 A marketplace made only for verified Virginia Tech students to buy, sell, and trade textbooks, course supplies, dorm gear, and peer services (like tutoring). Listings can be searched by course number, and the app has in-app messaging, ratings, and suggested safe on-campus meetup spots.
 
-**Course:** CS 3704, Project 1 (Fall 2026) | **Team:** The Bubble Guppies
+**Course:** CS 3704, Project 2 (Fall 2026)
 
 ## Team
 
@@ -12,6 +12,8 @@ A marketplace made only for verified Virginia Tech students to buy, sell, and tr
 | Nyla Eyob | nyla@vt.edu |
 | Delina Gebrehiwot | delina@vt.edu |
 
+Project 1 was built by The Bubble Guppies (Nathan Bezabeh, Nyla Eyob, Delina Gebrehiwot).
+
 ## The Problem
 
 VT students trade things with each other all the time, but they use general apps and group chats (Facebook Marketplace, GroupMe, Instagram) that never confirm the other person is a student and are not organized around classes. In our survey (12 responses), students rated trust in strangers on general marketplace apps at 2.25 out of 5 on average, and their biggest worry was getting scammed.
@@ -19,7 +21,8 @@ VT students trade things with each other all the time, but they use general apps
 ## What Hokie Trade Does
 
 - Sign up with an `@vt.edu` email and a verification code
-- Search listings by course number (for example, "CS 3704")
+- Search listings by course number (for example, "CS 3704"), title, or description
+- Create a listing as a seller
 - View a listing and its verified seller
 - Message the seller inside the app
 - See a suggested safe place to meet on campus
@@ -27,12 +30,19 @@ VT students trade things with each other all the time, but they use general apps
 
 ## Project Status
 
-This is a **working prototype** built with React Native, Expo, and TypeScript. It runs on a real phone through Expo Go. It uses **mock data** stored in memory, so nothing is saved, email verification is simulated, and messages are scripted. See the [open issues](../../issues) for known bugs and the features we would add with more time.
+This is a **working prototype** built with React Native, Expo, and TypeScript. It runs on a real phone through Expo Go. It uses **mock data** stored in memory, so nothing is saved, email verification is simulated in the app, and messages are scripted.
 
-Our design documents describe the full system we plan to build (Next.js, TypeScript, and Firebase). They are in this repository:
+The `backend/` folder has a tested Python module that sends real verification codes by email over SMTP ([ADR-0001](docs/adr/ADR-0001-python-smtp-email-verification.md)). It is not connected to the app yet.
 
-- [PRODUCT.md](PRODUCT.md) – requirements, survey findings, and user stories
-- [SYSTEM.md](SYSTEM.md) – planned architecture and data model
+See the [open issues](../../issues) for known bugs and planned features.
+
+## Documentation
+
+- [Product requirements](docs/product/PRODUCT.md) – requirements, survey findings, and user stories
+- [System design](docs/design/SYSTEM.md) – original planned architecture and data model (Next.js + Firebase; not what the prototype uses)
+- [User stories](docs/requirements/) – US-001 search, US-002 email verification, US-003 VT email validation
+- [Architecture decisions](docs/adr/) – ADR-0001, ADR-0002
+- [Research](docs/research/) – survey results and usability study
 
 ## How to Run It
 
@@ -42,12 +52,13 @@ Our design documents describe the full system we plan to build (Next.js, TypeScr
 - [Git](https://git-scm.com)
 - The **Expo Go** app on your phone (App Store or Google Play)
 - Your phone and computer on the **same Wi-Fi network**
+- Python 3.10+ (only for the backend tests)
 
 ### Steps
 
 ```bash
-git clone https://github.com/nati2405/Hokie_Trade
-cd Hokie_Trade
+git clone https://github.com/akoppell2025F/Hokie_Trade
+cd Hokie_Trade/frontend
 npm install
 npx expo start
 ```
@@ -62,6 +73,21 @@ npx expo start
 2. Type `CS 3704` in the search box.
 3. Open the textbook listing and tap **Contact Seller**.
 4. Send a message, then tap **Trade complete** and leave a rating.
+5. Back on the browse screen, tap **+ Sell an item** to post your own listing.
+
+### Run the tests
+
+```bash
+# frontend (Jest)
+cd frontend
+npm test
+npx tsc --noEmit
+
+# backend (pytest)
+cd backend
+pip install -r requirements.txt
+pytest
+```
 
 ### Troubleshooting
 
@@ -72,12 +98,22 @@ npx expo start
 ## Repository Layout
 
 ```
-App.tsx         The whole prototype (screens, mock data, styles)
-index.ts        Expo entry point
-app.json        Expo configuration
-assets/         App icons and images
-PRODUCT.md      Product requirements
-SYSTEM.md       System design
+frontend/                 Expo / React Native app
+  index.ts                Expo entry point
+  app.json                Expo configuration
+  assets/                 App icons and images
+  src/App.tsx             All screens, mock data, and styles
+  src/utils/              Search, email validation, and listing-form helpers
+  __tests__/              Jest unit tests
+backend/                  Python email verification module and pytest tests
+docs/
+  product/                Product requirements (PRODUCT.md)
+  design/                 System design and implementation sketches
+  adr/                    Architecture decision records
+  requirements/           User stories
+  research/               Survey results and usability study
+  course-tooling/           CS3704 course agent setup (not needed to run the app)
+AGENTS.md, CLAUDE.md      Instructions for AI coding tools
 ```
 
 ## AI Use

@@ -6,7 +6,7 @@
  * Reviewed and run by me; all tests pass with `npm test`.
  * Function under test: isValidCode in validateCode.ts.
  */
-import { isValidCode } from '../validateCode';
+import { isValidCode } from '../src/utils/validateCode';
 
 test('accepts exactly 6 digits, including leading zeros', () => {
   expect(isValidCode('401906')).toBe(true);

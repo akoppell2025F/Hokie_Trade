@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import { filterListings, showClearButton, resultCountText } from './searchUtils';
+import { filterListings, showClearButton, resultCountText } from './utils/searchUtils';
 import {
   StyleSheet, Text, View, SafeAreaView, TextInput,
   TouchableOpacity, ScrollView,
 } from 'react-native';
 
 // new vt email check
-import { isVtEmail } from './validateEmail';
+import { isVtEmail } from './utils/validateEmail';
 
-import { isValidCode } from './validateCode';
+import { isValidCode } from './utils/validateCode';
 
 // create-listing helpers
 import {
   type Listing, type ListingForm, type ListingFormErrors, emptyListingForm, MAX_TITLE_LENGTH,
   validateListing, buildListing, nextListingId, sellerNameFromEmail, formatPrice,
-} from './listingForm';
+} from './utils/listingForm';
 
 // Starting mock data. Listings live in state (below) so sellers can add more.
 const initialListings: Listing[] = [
@@ -125,7 +125,7 @@ export default function App() {
             value={email}
             onChangeText={(t) => { setEmail(t); if (emailError) setEmailError(''); }}
           />
-          <Text style={styles.hint}>Must end in @vt.edu — that's how we verify you're a Hokie.</Text>
+          <Text style={styles.hint}>{"Must end in @vt.edu — that's how we verify you're a Hokie."}</Text>
           {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
           <TouchableOpacity style={styles.btn} onPress={handleSendCode}>

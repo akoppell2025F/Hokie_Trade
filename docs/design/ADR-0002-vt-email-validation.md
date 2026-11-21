@@ -18,7 +18,7 @@ Additional forces shaping this decision:
 - **Client-only enforcement is a known limitation in this prototype.** With no backend, a determined caller can invoke the flow directly. The design should keep the rule reusable so the eventual server can enforce the same definition.
 
 ## Decision
-We will define the rule once in `validateEmail.ts` as an exported `isVtEmail(value)` that trims the input and tests it against the anchored, case-insensitive pattern `/^[A-Za-z0-9._%+-]+@vt\.edu$/i`; `handleSendCode` in `App.tsx` will call it before advancing to verification and will show a field-level error without navigating when it returns `false`.
+We will define the rule once in `frontend/src/utils/validateEmail.ts` as an exported `isVtEmail(value)` that trims the input and tests it against the anchored, case-insensitive pattern `/^[A-Za-z0-9._%+-]+@vt\.edu$/i`; `handleSendCode` in `frontend/src/App.tsx` will call it before advancing to verification and will show a field-level error without navigating when it returns `false`.
 
 ## Consequences
 - **Positive:**
@@ -35,7 +35,7 @@ We will define the rule once in `validateEmail.ts` as an exported `isVtEmail(val
   - The on-screen hint says "Must end in @vt.edu", which describes a suffix rule and does not match the exact-domain rule; the copy should be corrected.
   - Subdomain addresses (e.g., department-hosted `@cs.vt.edu`) are rejected by deliberate choice; supporting them later is a new decision, not a configuration change.
 - **Follow-ups:**
-  - Extend `__tests__/validateEmail.test.ts` to cover whitespace, multiple `@`, missing domain, subdomain, and `@notvt.edu`; the current suite covers the main cases but not all of these.
+  - Extend `frontend/__tests__/validateEmail.test.ts` to cover whitespace, multiple `@`, missing domain, subdomain, and `@notvt.edu`; the current suite covers the main cases but not all of these.
   - Correct the hint/error copy so it says the domain must be exactly `vt.edu`, not merely "end in".
   - When a backend is added, enforce the same rule server-side as the authoritative check and treat the client check as UX only.
   - Move the rule into a shared package/module if the backend is written in a different language, or duplicate the *definition* only with a shared test corpus.
@@ -52,10 +52,10 @@ We will define the rule once in `validateEmail.ts` as an exported `isVtEmail(val
 | Wait for a backend and enforce only server-side | Leaves the current prototype with no gate at all, so non-VT addresses pass today; the client check is a useful interim control as long as its limitation is documented. |
 
 ## Links
-- US-003 — restrict sign-up to Virginia Tech email addresses.
-- US-002 — email verification (the server-side flow that builds on this rule).
-- `validateEmail.ts` — implementation of the single rule.
-- `App.tsx` (`handleSendCode`) — the UI integration point.
-- `__tests__/validateEmail.test.ts` — unit tests for the rule.
+- [US-003](../requirements/vt-email-validation-user-stories.md) — restrict sign-up to Virginia Tech email addresses.
+- [US-002](../requirements/email-verification-user-stories.md) — email verification (the server-side flow that builds on this rule).
+- `frontend/src/utils/validateEmail.ts` — implementation of the single rule.
+- `frontend/src/App.tsx` (`handleSendCode`) — the UI integration point.
+- `frontend/__tests__/validateEmail.test.ts` — unit tests for the rule.
 - Future requirement: server-side enforcement when a backend exists.
 - Future requirement: student-status verification and email ownership verification.

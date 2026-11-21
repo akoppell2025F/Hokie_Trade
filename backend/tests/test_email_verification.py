@@ -12,7 +12,6 @@ from email_verification import (
     send_verification_email,
 )
 
-
 # ---------- email validation ----------
 
 @pytest.mark.parametrize("raw, expected", [
