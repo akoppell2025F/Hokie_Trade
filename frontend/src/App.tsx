@@ -8,6 +8,8 @@ import {
 // new vt email check
 import { isVtEmail } from './utils/validateEmail';
 
+import { isValidCode } from './utils/validateCode';
+
 // create-listing helpers
 import {
   type Listing, type ListingForm, type ListingFormErrors, emptyListingForm, MAX_TITLE_LENGTH,
@@ -29,6 +31,7 @@ export default function App() {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [code, setCode] = useState('');
+  const [codeError, setCodeError] = useState('');
   const [query, setQuery] = useState('');
   const [activeListing, setActiveListing] = useState<Listing | null>(null);
   const [messages, setMessages] = useState<Message[]>([
@@ -95,6 +98,14 @@ export default function App() {
     setEmailError('');
     setScreen('verify');
   };
+  const handleVerify = () => {
+  if (!isValidCode(code)) {
+    setCodeError('Enter the 6-digit code we sent to your email.');
+    return;
+  }
+  setCodeError('');
+  setScreen('browse');
+};
 
   // ---------- LOGIN ----------
   if (screen === 'login') {
@@ -125,7 +136,7 @@ export default function App() {
     );
   }
 
-  // ---------- VERIFY CODE ----------
+    // ---------- VERIFY CODE ----------
   if (screen === 'verify') {
     return (
       <SafeAreaView style={styles.loginContainer}>
@@ -134,24 +145,26 @@ export default function App() {
           <Text style={styles.tagline}>We sent a 6-digit code to {email}.</Text>
           <Text style={styles.fieldLabel}>Verification code</Text>
           <TextInput
-            style={styles.field}
+            style={[styles.field, codeError ? styles.fieldError : null]}
             placeholder="123456"
             placeholderTextColor="#D9B9A6"
             keyboardType="number-pad"
             value={code}
-            onChangeText={setCode}
+            onChangeText={(t) => { setCode(t); if (codeError) setCodeError(''); }}
             maxLength={6}
           />
-          <TouchableOpacity style={styles.btn} onPress={() => setScreen('browse')}>
+          {codeError ? <Text style={styles.errorText}>{codeError}</Text> : null}
+          <TouchableOpacity style={styles.btn} onPress={handleVerify}>
             <Text style={styles.btnText}>Verify</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setScreen('login')}>
+          <TouchableOpacity onPress={() => { setCode(''); setCodeError(''); setScreen('login'); }}>
             <Text style={styles.linkText}>← Use a different email</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
   }
+
 
   // ---------- BROWSE ----------
   if (screen === 'browse') {
